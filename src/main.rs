@@ -20,10 +20,10 @@ fn main() {
         utils::input_handler(&mut choice);
 
         match choice.trim() {
-            "1" => tasks_manager::add_task(&mut tasks),
-            "2" => tasks_manager::list_tasks(&tasks),
-            "3" => tasks_manager::delete_task(&mut tasks),
-            "4" => tasks_manager::check_task(&mut tasks),
+            "1" => Tasks::new(&mut tasks),
+            "2" => Tasks::list(&tasks),
+            "3" => Tasks::remove(&mut tasks),
+            "4" => Tasks::check_task(&mut tasks),
             "0" => {
                 println!("Keluar program...");
                 break;
