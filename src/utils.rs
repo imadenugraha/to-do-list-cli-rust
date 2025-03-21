@@ -1,5 +1,6 @@
 use std::io;
 
-pub fn input_handler(input: &mut String) -> usize {
-    io::stdin().read_line(input).expect("Can't read input")
+pub fn input_handler(input: &mut String) -> Result<(), std::io::Error> {
+    io::stdin().read_line(input)?;
+    Ok(())
 }
