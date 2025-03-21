@@ -1,6 +1,7 @@
 #[path ="utils.rs"]
 mod utils;
 
+#[derive(Debug)]
 pub struct Tasks {
     id: u32,
     title: String,
@@ -8,76 +9,100 @@ pub struct Tasks {
 }
 
 impl Tasks {
-    pub fn new(tasks: &mut Vec<Self>) {
-        let mut id_input: String = String::new();
-
-        println!("Masukkan ID: ");
-        utils::input_handler(&mut id_input);
-
-        println!("Masukkan Title Task: ");
-        let mut title: String = String::new();
-        utils::input_handler(&mut title);
-
-        let id: u32 = match id_input.trim().parse() {
-            Ok(num) => num,
-            Err(_) => {
-                println!("ID harus berupa angka!\n");
-                return;
-            }
-        };
-
-        tasks.push(Self {id, title, completed: false});
-
-        println!("Task berhasil ditambahkan!");
+    pub fn new(id: u32, title: String) -> Self {
+        Self { id, title, completed: false }
     }
 
-    pub fn list(tasks: &Vec<Self>) {
-        for (_, task) in tasks.iter().enumerate() {
-            println!("{}, Title: {}, Completed: {}", task.id, task.title, task.completed);
+    pub fn mark_completed(&mut self) {
+        self.completed = true;
+    }
+}
+
+pub fn add_task(tasks: &mut Vec<Tasks>) {
+    let mut id_input: String = String::new();
+
+    println!("Masukkan ID: ");
+    if let Err(e) = utils::input_handler(&mut id_input) {
+        println!("Error: {:?}", e);
+        return;
+    }
+
+    println!("Masukkan Title Task: ");
+    let mut title: String = String::new();
+    if let Err(e) = utils::input_handler(&mut title) {
+        println!("Error: {:?}", e);
+        return;
+    }
+
+    let id: u32 = match id_input.trim().parse() {
+        Ok(num) => num,
+        Err(_) => {
+            println!("ID harus berupa angka!\n");
+            return;
         }
+    };
+
+    tasks.push(Tasks::new(id, title));
+
+    println!("Task berhasil ditambahkan!");
+}
+
+pub fn list(tasks: &[Tasks]) {
+    for task in tasks.iter() {
+        println!("{}. Title: {}, Completed: {}", 
+        task.id, 
+        task.title, 
+        if task.completed {"Selesai!"} else {"Belum Selesai!"});
+    }
+}
+
+pub fn remove(tasks: &mut Vec<Tasks>) {
+    let mut id_input: String = String::new();
+
+    println!("Masukkan ID: ");
+    if let Err(e) = utils::input_handler(&mut id_input) {
+        println!("Error: {:?}", e);
+        return;
     }
 
-    pub fn remove(tasks: &mut Vec<Self>) {
-        let mut id_input: String = String::new();
+    let id: u32 = match id_input.trim().parse() {
+        Ok(num) => num,
+        Err(_) => {
+            println!("ID harus berupa angka");
+            return;
+        }
+    };
 
-        println!("Masukkan ID: ");
-        utils::input_handler(&mut id_input);
-
-        let id: u32 = match id_input.trim().parse() {
-            Ok(num) => num,
-            Err(_) => {
-                println!("ID harus berupa angka");
-                return;
-            }
-        };
-
-        if let Some(task) = tasks.iter_mut().position(|x| x.id == id) {
-            tasks.remove(task);
+    match tasks.iter().position(|task: &Tasks| task.id == id) {
+        Some(index) => {
+            tasks.remove(index);
             println!("Task berhasil dihapus!");
-        } else {
-            println!("Task tidak ditemukan!");
         }
+        None => println!("Task tidak ditemukan!"),
+    }
+}
+
+pub fn check_task(tasks: &mut Vec<Tasks>) {
+    let mut id_input: String = String::new();
+
+    println!("Masukan ID: ");
+    if let Err(e) = utils::input_handler(&mut id_input) {
+        println!("Error: {:?}", e);
+        return;
     }
 
-    pub fn check_task(tasks: &mut Vec<Self>) {
-        let mut id_input: String = String::new();
-
-        println!("Masukan ID: ");
-        utils::input_handler(&mut id_input);
-
-        let id: u32 = match id_input.trim().parse() {
-            Ok(num) => num,
-            Err(_) => {
-                println!("ID harus berupa angka");
-                return;
-            }
-        };
-
-        if let Some(task) = tasks.iter_mut().find(|x| x.id == id) {
-            task.completed = true;
-            println!("Task selesai!");
-        } else {
-            println!("Task tidak ditemukan!");
+    let id: u32 = match id_input.trim().parse() {
+        Ok(num) => num,
+        Err(_) => {
+            println!("ID harus berupa angka");
+            return;
         }
+    };
+
+    if let Some(task) = tasks.iter_mut().find(|x: &&mut Tasks| x.id == id) {
+        task.mark_completed();
+        println!("Task selesai!");
+    } else {
+        println!("Task tidak ditemukan!");
     }
 }
