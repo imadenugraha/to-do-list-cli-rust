@@ -17,13 +17,16 @@ fn main() {
         println!("0. Keluar");
 
         let mut choice: String = String::new();
-        utils::input_handler(&mut choice);
+        if let Err(e) = utils::input_handler(&mut choice) {
+            println!("Error: {e}");
+            return;
+        }
 
         match choice.trim() {
-            "1" => Tasks::new(&mut tasks),
-            "2" => Tasks::list(&tasks),
-            "3" => Tasks::remove(&mut tasks),
-            "4" => Tasks::check_task(&mut tasks),
+            "1" => tasks_manager::add_task(&mut tasks),
+            "2" => tasks_manager::list(&tasks),
+            "3" => tasks_manager::remove(&mut tasks),
+            "4" => tasks_manager::check_task(&mut tasks),
             "0" => {
                 println!("Keluar program...");
                 break;
