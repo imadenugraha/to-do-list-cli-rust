@@ -2,9 +2,9 @@
 mod utils;
 
 pub struct Tasks {
-    pub id: u32,
-    pub title: String,
-    pub completed: bool
+    id: u32,
+    title: String,
+    completed: bool
 }
 
 impl Tasks {
